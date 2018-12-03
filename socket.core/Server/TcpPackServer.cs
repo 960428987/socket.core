@@ -41,7 +41,10 @@ namespace socket.core.Server
         /// 包头标记
         /// </summary>
         private uint headerFlag;
-
+        /// <summary>
+        /// 已连接的客户端的IP信息 2018-11-29 16:53
+        /// </summary>
+        public Dictionary<int, string> RemoteEndPoint = new Dictionary<int, string>();
         /// <summary>
         /// 设置基本配置
         /// </summary>   
@@ -89,7 +92,11 @@ namespace socket.core.Server
         private void TcpServer_eventactionAccept(int connectId)
         {
             if (OnAccept != null)
+            {
+                //2018 - 11 - 29 16:53
+                RemoteEndPoint.Add(connectId, tcpServer.connectClient[connectId].socket.RemoteEndPoint.ToString());
                 OnAccept(connectId);
+            }
         }
 
         /// <summary>
@@ -164,7 +171,11 @@ namespace socket.core.Server
                 queue.Remove(connectId);
             }
             if (OnClose != null)
+            {
+                // 2018-11-29 16:53
+                RemoteEndPoint.Remove(connectId);
                 OnClose(connectId);
+            }
         }
 
         /// <summary>
