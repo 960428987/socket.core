@@ -38,7 +38,10 @@ namespace socket.core.Server
         /// 接收到的数据缓存 
         /// </summary>
         private Dictionary<int, List<byte>> queue;
-
+        /// <summary>
+        /// 已连接的客户端的IP信息 2018-11-29 16:53
+        /// </summary>
+        public Dictionary<int, string> RemoteEndPoint = new Dictionary<int, string>();
         /// <summary>
         /// 设置基本配置
         /// </summary>   
@@ -79,8 +82,13 @@ namespace socket.core.Server
         /// <param name="connectId">连接标记</param>
         private void TcpServer_eventactionAccept(int connectId)
         {
-            if (OnAccept != null)
+           if (OnAccept != null)
+            {
+                //2018 - 11 - 29 16:53
+                RemoteEndPoint.Add(connectId, tcpServer.connectClient[connectId].socket.RemoteEndPoint.ToString());
                 OnAccept(connectId);
+
+            }
         }
 
         /// <summary>
@@ -185,7 +193,11 @@ namespace socket.core.Server
                 queue.Remove(connectId);
             }
             if (OnClose != null)
+            {
+                // 2018-11-29 16:53
+                RemoteEndPoint.Remove(connectId);
                 OnClose(connectId);
+            }
         }
 
         /// <summary>
